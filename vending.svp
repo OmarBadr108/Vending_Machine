@@ -1,0 +1,25 @@
+module vending_sva (clk, rstn, Q_in, D_in, dispense, change);
+input clk, rstn, Q_in, D_in, dispense, change;
+	property p_dollar ; 
+		@(posedge clk) D_in |-> (dispense && change);
+	endproperty 
+
+	property p_quarter_dispense ;
+		@(posedge clk) $rose(Q_in) ##2 dispense ;
+	endproperty 
+
+	property p_quarter_change ;
+		@(posedge clk) Q_in |->  !(dispense);
+	endproperty 
+
+		p_dollar_ : assert property (p_dollar);
+		p_dollar__ : cover property (p_dollar);
+
+		p_quarter_dispense_ : assert property (p_quarter_dispense);
+		p_quarter_dispense__ : cover property (p_quarter_dispense);
+
+		p_quarter_change_ : assert property (p_quarter_change);
+		p_quarter_change__ : cover property (p_quarter_change);
+
+
+endmodule 
